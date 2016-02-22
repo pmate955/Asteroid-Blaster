@@ -69,7 +69,7 @@ public class UFO extends JComponent{
     
     public int[] shot(){                                        //0 - posX, 1 - posY, 2 - direction
         int[] positions = new int[3];
-        int direction = ThreadLocalRandom.current().nextInt(1, 9);
+        int direction = ThreadLocalRandom.current().nextInt(1, 6);
         positions[2] = direction;
         if(direction == 1) {
             positions[0] = posX+(size/2);

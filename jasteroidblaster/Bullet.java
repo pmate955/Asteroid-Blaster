@@ -17,13 +17,13 @@ import javax.swing.JComponent;
 public class Bullet extends JComponent{
     
     boolean fromPlayer;   
-    int direction;
+    double direction;
     int maxX;
     int maxY;
-    int posX;
-    int posY;
+    double posX;
+    double posY;
     
-    public Bullet(int maxX, int maxY, int posX, int posY, int direction, boolean fromPlayer){
+    public Bullet(int maxX, int maxY, double posX, double posY, double direction, boolean fromPlayer){
         this.fromPlayer = fromPlayer;
         this.maxX = maxX;
         this.maxY = maxY;
@@ -35,45 +35,22 @@ public class Bullet extends JComponent{
     public void paintComponent(Graphics gr){        
         super.paintComponent(gr);        
         gr.setColor(Color.white);
-        gr.fillRect(posX, posY, 5, 5);        
+        gr.fillRect((int)posX, (int)posY, 5, 5);        
     }
     
     public boolean move(){                                          //False: over bullet
-            if(direction==1){                       //Up
-                if(posY-1>=0) posY--;
-                else return false;
-            } else if(direction==2){                //Up Right
-                if(posX+1<maxX-2) posX++;
-                else return false;
-                if(posY-1>=0) posY--;
-                else return false;
-            } else if(direction==3){                //Right
-                if(posX+1<maxX-2) posX++;
-                else return false;
-            } else if(direction==4){                //Down Right
-                if(posX+1<maxX-2) posX++;
-                else return false;
-                if(posY+1<maxY-2) posY++;
-                else return false;
-            } else if(direction==5){                //Down
-                if(posY+1<maxY-2) posY++;
-                else return false;          
-            } else if(direction==6){                //Down Left
-                if(posY+1<maxY-2) posY++;
-                else  return false;
-                if(posX-1>=0) posX--;
-                else return false;
-            } else if(direction==7){                //Left
-                if(posX-1>=0) posX--;
-                else  return false;
-            } else if(direction==8){                //Up left
-                if(posX-1>=0) posX--;
-                else  return false;
-                if(posY-1>=0) posY--;
-                else  return false;
+            double tempX = posX;
+            double tempY = posY;
+            tempX+=Math.sin(direction);
+            tempY-=Math.cos(direction);
+            if(tempX < 0 || tempX > maxX) return false;
+            else if(tempY < 0 || tempY > maxY) return false;
+            else {
+                posX = tempX;
+                posY = tempY;
+                return true;
             }
-            //repaint();            
-            return true;
     }
+        
 
 }

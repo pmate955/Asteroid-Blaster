@@ -22,17 +22,17 @@ public class Meteor extends JComponent{
     BufferedImage small;
     BufferedImage medium;
     BufferedImage large;
-    int direction;
+    double direction;
     int maxX;
     int maxY;
-    int posX;
-    int posY;
+    double posX;
+    double posY;
     int type;              //1-small, 2 medium, 3, large
     int speed;              // small - 3, medium 6, large 15
     int cycle;
     int size;
     
-    public Meteor(int maxX, int maxY, int posX, int posY, int type, int direction){
+    public Meteor(int maxX, int maxY, double posX, double posY, int type, double direction){
         this.maxX = maxX;
         this.maxY = maxY;
         this.posX = posX;
@@ -57,56 +57,34 @@ public class Meteor extends JComponent{
         } catch (Exception e){
             System.out.println("MEteor images not found!");
         }
-        if(direction == 0) this.direction = ThreadLocalRandom.current().nextInt(1, 9);   
+        if(direction == -5) this.direction = ThreadLocalRandom.current().nextDouble(0, 6);   
         else this.direction = direction;
     }   
     
     public void paintComponent(Graphics gr){ 
        
         Graphics2D g2d = (Graphics2D)gr.create();
-        if(this.type==1) g2d.drawImage(small, posX, posY,size, size, this);
-        else if(this.type==2) g2d.drawImage(medium, posX, posY,size, size, this);
-        else if(this.type==3) g2d.drawImage(large, posX, posY,size, size, this);
+        //g2d.rotate(direction, posX+(size/2), posY+(size/2));
+        if(this.type==1) g2d.drawImage(small, (int)posX, (int)posY,size, size, this);
+        else if(this.type==2) g2d.drawImage(medium, (int)posX, (int)posY,size, size, this);
+        else if(this.type==3) g2d.drawImage(large, (int)posX, (int)posY,size, size, this);
+        
         //g2d.dispose();        
     }
     
     public void move(){
         if(cycle==0){
             cycle=speed;
-            if(direction==1){                       //Up
-                if(posY-1>=0) posY--;
-                else posY=maxY-2;
-            } else if(direction==2){                //Up Right
-                if(posX+1<maxX-2) posX++;
-                else posX = 2;
-                if(posY-1>=0) posY--;
-                else posY = maxY-2;
-            } else if(direction==3){                //Right
-                if(posX+1<maxX-2) posX++;
-                else posX=2;
-            } else if(direction==4){                //Down Right
-                if(posX+1<maxX-2) posX++;
-                else posX=2;
-                if(posY+1<maxY-2) posY++;
-                else posY=2;
-            } else if(direction==5){                //Down
-                if(posY+1<maxY-2) posY++;
-                else posY=2;                
-            } else if(direction==6){                //Down Left
-                if(posY+1<maxY-2) posY++;
-                else posY = 2;
-                if(posX-1>=0) posX--;
-                else posX = maxX-2;
-            } else if(direction==7){                //Left
-                if(posX-1>=0) posX--;
-                else posX = maxX-2;
-            } else if(direction==8){                //Up left
-                if(posX-1>=0) posX--;
-                else posX = maxX-2;
-                if(posY-1>=0) posY--;
-                else posY = maxY-2;
-            }
-             //repaint();
+            double tempX = posX;
+            double tempY = posY;
+            tempX+=Math.sin(direction);
+            tempY-=Math.cos(direction);
+            if(tempX < 0) tempX = maxX-10;
+            else if(tempX > maxX-10) tempX = 10;
+            if(tempY < 0 ) tempY = maxY-10;
+            else if(tempY > maxY-10) tempY = 10;
+            posX = tempX;
+            posY = tempY;            
         } else cycle--;
        
     }

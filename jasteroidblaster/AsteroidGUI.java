@@ -33,6 +33,9 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     boolean addedLabel = false;
     boolean ufoSpawned = false;
     boolean generated = false;  
+    boolean upPushed = false;
+    boolean rightPushed = false;
+    boolean leftPushed = false;
     byte lifes;
     byte lifesMax;
     ImagePanel ip;
@@ -40,7 +43,9 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     int shotAsteroids = 0;
     int score = 0;
     int xSize = 1020;
-    int ySize = 700;    
+    int ySize = 700; 
+    int keyCycle = 20;
+    int turnCycle = 11;
     JLabel displayer = new JLabel();
     List<Meteor> meteors;
     List<Bullet> bullets;       
@@ -65,46 +70,60 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         init();             
         this.revalidate();       
         this.repaint();
-        this.addKeyListener(new KeyAdapter(){       //Keyboard
+        this.addKeyListener(new KeyAdapter() {       //Keyboard
+                       
             public void keyPressed(KeyEvent e){
+                
+                     int keyCode = e.getKeyCode();
+                    if((keyCode==38 || keyCode==87)&& !isEnd){
+                        //sh.accelerate();
+                        upPushed = true;
+                    }
+                    else if((keyCode==40 || keyCode==83) && !isEnd){
+
+                    }
+                    else if((keyCode==39 || keyCode==68)&& !isEnd){
+                        //sh.turn(false);
+                        rightPushed = true;
+                    }
+                    else if((keyCode==37 || keyCode==65)&& !isEnd){
+                        //sh.turn(true);
+                        leftPushed = true;
+                    }
+                    else if(keyCode==32 && !isEnd && canshot){
+                        bullets.add(new Bullet(xSize,ySize,(int)sh.posX+15,(int)sh.posY+15,sh.angle,true));                       
+
+                        addedLabel = true;
+                        addedLabelCount++;
+
+                    }
+                    else if(keyCode==80 && !isEnd){
+                        if(!isPaused) isPaused = true;
+                        else isPaused = false;
+                    }
+                }
+                
+
+                
+                
+            
+                
+            public void keyReleased(KeyEvent e){
                 int keyCode = e.getKeyCode();
                 if((keyCode==38 || keyCode==87)&& !isEnd){
-                    sh.accelerate();
+                    //sh.accelerate();
+                    upPushed = false;
                 }
                 else if((keyCode==40 || keyCode==83) && !isEnd){
-                   // sh.speedChange(false);
+                  
                 }
                 else if((keyCode==39 || keyCode==68)&& !isEnd){
-                    sh.turn(false);
+                    //sh.turn(false);
+                    rightPushed = false;
                 }
                 else if((keyCode==37 || keyCode==65)&& !isEnd){
-                    sh.turn(true);
-                }
-                else if(keyCode==32 && !isEnd && canshot){
-                   if(sh.newDirection==1){
-                       bullets.add(new Bullet(xSize,ySize,sh.posX+15,sh.posY,1,true));                       
-                   } else if(sh.newDirection==2){
-                       bullets.add(new Bullet(xSize,ySize,sh.posX+30, sh.posY,2, true));                       
-                   } else if(sh.newDirection==3){
-                       bullets.add(new Bullet(xSize,ySize,sh.posX+30, sh.posY+15,3, true));                       
-                   } else if(sh.newDirection==4){
-                       bullets.add(new Bullet(xSize,ySize,sh.posX+30, sh.posY+30,4,true));                       
-                   } else if(sh.newDirection==5){
-                       bullets.add(new Bullet(xSize,ySize,sh.posX+15, sh.posY+30,5,true));                       
-                   } else if(sh.newDirection==6){
-                       bullets.add(new Bullet(xSize,ySize,sh.posX, sh.posY+30,6, true));                      
-                   } else if(sh.newDirection==7){
-                       bullets.add(new Bullet(xSize,ySize,sh.posX, sh.posY+15,7,true));                       
-                   } else if(sh.newDirection==8){
-                       bullets.add(new Bullet(xSize,ySize,sh.posX, sh.posY,8,true));                 
-                   }                  
-                    addedLabel = true;
-                    addedLabelCount++;
-                   
-                }
-                else if(keyCode==80 && !isEnd){
-                    if(!isPaused) isPaused = true;
-                    else isPaused = false;
+                    //sh.turn(true);
+                    leftPushed = false;
                 }
             }
         });
@@ -157,7 +176,16 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     }
         
     private void writeOut(){                                                        //Main game run
-        displayer.setText("Score: " + this.score + " Lifes: " + this.lifes);
+        if(keyCycle == 0){
+            if(upPushed) sh.accelerate();            
+            keyCycle = 20;
+        } else keyCycle--;
+        if(turnCycle == 0){
+            if(leftPushed) sh.turn(true);
+            if(rightPushed) sh.turn(false);
+            turnCycle = 11;
+        } else turnCycle--;
+        displayer.setText("Score: " + this.score + " Lifes: " + this.lifes);       
         if(this.lifes == 0) isEnd = true;
          sh.move2(); 
         if(ufoShip!=null){
@@ -175,7 +203,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                 ufoSpawned = false;
                 this.validate();
             } else {
-                if(ufoShip.checkCollision(sh.posX, sh.posY, sh.size)) this.resetShip();
+                if(ufoShip.checkCollision((int)sh.posX, (int)sh.posY, sh.size)) this.resetShip();
             }
         }
         if(score%15==5 && !ufoSpawned){
@@ -191,7 +219,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         this.moveBullets();
         this.shotCheck();           
         if(shotAsteroids==4){
-            Meteor m = new Meteor(xSize,ySize,10,10, 3,0);
+            Meteor m = new Meteor(xSize,ySize,10,10, 3,-5);
             meteors.add(m);
             this.getContentPane().add(m);
             this.validate();
@@ -206,10 +234,10 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
        
     private void generate(){                                                    //Add the first 4 asteroid
         if(!generated){            
-            Meteor topleft = new Meteor(xSize,ySize,10,10, 3,0);
-            Meteor topright = new Meteor(xSize,ySize,450,10,3,0);
-            Meteor lowleft = new Meteor(xSize,ySize,10,450, 3,0);
-            Meteor lowright = new Meteor(xSize,ySize,450,450,3,0);
+            Meteor topleft = new Meteor(xSize,ySize,10,10, 3,-5);
+            Meteor topright = new Meteor(xSize,ySize,450,10,3,-5);
+            Meteor lowleft = new Meteor(xSize,ySize,10,450, 3,-5);
+            Meteor lowright = new Meteor(xSize,ySize,450,450,3,-5);
             meteors.add(topleft);
             meteors.add(topright);
             meteors.add(lowleft);
@@ -242,6 +270,9 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     
     private void resetShip(){
         lifes--;
+        upPushed = false;
+        leftPushed = false;
+        rightPushed = false;
         for(int x = 500; x < xSize; x+=50){
             boolean isGood = true;
             for(int i = 0; i < meteors.size();i++){
@@ -260,7 +291,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         for(int i = 0; i < meteors.size();i++){                             //Move meteors                
                 Meteor m = meteors.get(i);
                 m.move();               
-                if(m.checkCollision(sh.posX, sh.posY, sh.size)){                    
+                if(m.checkCollision((int)sh.posX, (int)sh.posY, sh.size)){                    
                     this.resetShip();                    
                 } 
                 if(ufoShip != null){
@@ -294,14 +325,14 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         Meteor  m = meteors.get(i);
         for(int j = 0; j < bullets.size();j++){
             Bullet b = bullets.get(j);
-            if(m.shot(b.posX, b.posY)){
+            if(m.shot((int)b.posX, (int)b.posY)){
                 if(m.type>1){
-                    int direction1;
-                    int direction2;
-                    if(b.direction+1>8) direction1 = 1;
-                    else direction1 = b.direction+1;
-                    if(b.direction-1<1) direction2 = 8;
-                    else direction2 = b.direction-1;
+                    double direction1;
+                    double direction2;
+                    if(b.direction+1>6) direction1 = 1;
+                    else direction1 = (int)b.direction+1;
+                    if(b.direction-1<1) direction2 = 6;
+                    else direction2 = (int)b.direction-1;
                     Meteor m2 = new Meteor(xSize,ySize,m.posX,m.posY,m.type-1, direction1);
                     Meteor m3 = new Meteor(xSize,ySize,m.posX,m.posY,m.type-1, direction2);
                     meteors.add(m2);
@@ -327,7 +358,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                 }
             }
             if(b.fromPlayer && ufoShip != null){
-                if(ufoShip.getShot(b.posX, b.posY)){
+                if(ufoShip.getShot((int)b.posX, (int)b.posY)){
                     this.getContentPane().remove(ufoShip);                    
                     bullets.remove(b);      
                     this.getContentPane().remove(b);
@@ -336,7 +367,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                     ufoShip = null;
                 }
             } else {
-                if(!b.fromPlayer && sh.getShot(b.posX, b.posY)){
+                if(!b.fromPlayer && sh.getShot((int)b.posX, (int)b.posY)){
                     this.resetShip();                      
                     bullets.remove(j);  
                     this.getContentPane().remove(b);
@@ -397,3 +428,5 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
+
+//class KeyBoard extends KeyEvent implements Runnable
