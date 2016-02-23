@@ -44,7 +44,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     int score = 0;
     int xSize = 1020;
     int ySize = 700; 
-    int keyCycle = 20;
+    int keyCycle = 22;
     int turnCycle = 10;
     JLabel displayer = new JLabel();
     List<Meteor> meteors;
@@ -164,7 +164,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     private void writeOut(){                                                    //Main game run thread
         if(keyCycle == 0){
             if(upPushed) sh.accelerate();            
-            keyCycle = 20;
+            keyCycle = 22;
         } else keyCycle--;
         if(turnCycle == 0){
             if(leftPushed) sh.turn(true);

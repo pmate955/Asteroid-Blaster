@@ -23,6 +23,8 @@ public class SpaceShip extends JComponent{
     boolean accelerated = false;
     BufferedImage up;    
     BufferedImage upF;
+    int speedPlus = 0;
+    double speedAngle = 0;
     int fireCycle = 20;                                                         //Blow time
     int maxX;                                                                   //Window size(width)
     int maxY;                                                                   //Window size(height);
@@ -71,13 +73,22 @@ public class SpaceShip extends JComponent{
                 for(int i = 0; i < angles.size();i++){
                     int cyc = angleCycle.get(i);
                     if(angles.get(i)== angle){                        
-                        if(cyc>1){                        
+                        if(cyc>2){                        
                             angleCycle.set(i, cyc-=1);                               
+                        } else if(speedPlus < 3){
+                            angles.add(angle);
+                            angleCycle.add(7);
+                            cycles.add(7);
+                            speedAngle = angle;
+                            speedPlus++;
                         }
                     } else if(cyc<10){
                         angleCycle.set(i, cyc+=1);
                     }
                     if(cyc+1==10){
+                        if(angles.get(i)==speedAngle){
+                            speedPlus = 0;
+                        }
                         angles.remove(i);
                         angleCycle.remove(i);
                         cycles.remove(i);     
@@ -100,16 +111,16 @@ public class SpaceShip extends JComponent{
             if(cyc==0){
                 cycles.set(i, angleCycle.get(i));
                 double rad = angles.get(i);
-                 double tempX = posX;
+                double tempX = posX;
                 double tempY = posY;
                 tempX+=Math.sin(rad);
                 tempY-=Math.cos(rad);
-                if(tempX < 5) tempX = maxX-10;
-                else if(tempX > maxX-10) tempX = 5;
-                if(tempY < 5 ) tempY = maxY-10;
-                else if(tempY > maxY-10) tempY = 5;
+                if(tempX < 5) tempX = maxX-18;
+                else if(tempX > maxX-15) tempX = 5;
+                if(tempY < 5 ) tempY = maxY-18;
+                else if(tempY > maxY-15) tempY = 5;
                 posX = tempX;
-                posY = tempY;                 
+                posY = tempY;       
             } else{
                 cycles.set(i, cyc-=1);                
             }
@@ -140,6 +151,7 @@ public class SpaceShip extends JComponent{
         this.cycles.clear();
         this.posX = maxX/2;
         this.posY = maxY/2;
+        this.speedPlus = 0;
     } 
     
     public void reset(int x, int y){                                            //Reset ship to another location
@@ -150,6 +162,7 @@ public class SpaceShip extends JComponent{
         this.cycles.clear();
         this.posX = x;
         this.posY = y;
+        this.speedPlus = 0;
     }
     
     
