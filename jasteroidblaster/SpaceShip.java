@@ -7,7 +7,7 @@ package jasteroidblaster;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -21,8 +21,8 @@ public class SpaceShip extends JComponent{
     
     boolean running = true;   
     boolean accelerated = false;
-    Image up;    
-    Image upF;
+    BufferedImage up;    
+    BufferedImage upF;
     int fireCycle = 20;                                                         //Blow time
     int maxX;                                                                   //Window size(width)
     int maxY;                                                                   //Window size(height);
@@ -104,10 +104,10 @@ public class SpaceShip extends JComponent{
                 double tempY = posY;
                 tempX+=Math.sin(rad);
                 tempY-=Math.cos(rad);
-                if(tempX < 0) tempX = maxX-10;
-                else if(tempX > maxX-10) tempX = 10;
-                if(tempY < 0 ) tempY = maxY-10;
-                else if(tempY > maxY-10) tempY = 10;
+                if(tempX < 5) tempX = maxX-10;
+                else if(tempX > maxX-10) tempX = 5;
+                if(tempY < 5 ) tempY = maxY-10;
+                else if(tempY > maxY-10) tempY = 5;
                 posX = tempX;
                 posY = tempY;                 
             } else{
@@ -123,10 +123,10 @@ public class SpaceShip extends JComponent{
     
     public void turn(boolean toLeft){                                           //Rotate spaceship       
        if(toLeft){
-            if(dir>10) dir-=10;
+            if(dir>5) dir-=5;
             else dir = 360;
         } else {
-            if(dir < 350) dir +=10;
+            if(dir < 355) dir +=5;
             else dir = 0;
         }
        angle = Math.toRadians(dir);

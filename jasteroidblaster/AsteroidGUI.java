@@ -45,7 +45,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     int xSize = 1020;
     int ySize = 700; 
     int keyCycle = 20;
-    int turnCycle = 11;
+    int turnCycle = 10;
     JLabel displayer = new JLabel();
     List<Meteor> meteors;
     List<Bullet> bullets;       
@@ -70,59 +70,45 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         init();             
         this.revalidate();       
         this.repaint();
-        this.addKeyListener(new KeyAdapter() {       //Keyboard
+        this.addKeyListener(new KeyAdapter() {                                  //Keyboard
                        
-            public void keyPressed(KeyEvent e){
+            public void keyPressed(KeyEvent e){                                 //Pressed
                 
                      int keyCode = e.getKeyCode();
-                    if((keyCode==38 || keyCode==87)&& !isEnd){
-                        //sh.accelerate();
+                    if((keyCode==38 || keyCode==87)&& !isEnd){                  //Up (Forward)         
                         upPushed = true;
-                    }
-                    else if((keyCode==40 || keyCode==83) && !isEnd){
-
-                    }
-                    else if((keyCode==39 || keyCode==68)&& !isEnd){
-                        //sh.turn(false);
+                    }                    
+                    else if((keyCode==39 || keyCode==68)&& !isEnd){             //Right (Turn)
                         rightPushed = true;
                     }
-                    else if((keyCode==37 || keyCode==65)&& !isEnd){
-                        //sh.turn(true);
+                    else if((keyCode==37 || keyCode==65)&& !isEnd){             //Left (Turn)
                         leftPushed = true;
                     }
                     else if(keyCode==32 && !isEnd && canshot){
-                        bullets.add(new Bullet(xSize,ySize,(int)sh.posX+15,(int)sh.posY+15,sh.angle,true));                       
-
+                        bullets.add(new Bullet(xSize,ySize,(int)sh.posX+15,(int)sh.posY+15,sh.angle,true));
                         addedLabel = true;
                         addedLabelCount++;
 
                     }
-                    else if(keyCode==80 && !isEnd){
+                    else if(keyCode==80 && !isEnd){                             //Pause
                         if(!isPaused) isPaused = true;
                         else isPaused = false;
                     }
-                }
-                
-
-                
-                
+                }        
             
                 
-            public void keyReleased(KeyEvent e){
+            public void keyReleased(KeyEvent e){                                //Released
                 int keyCode = e.getKeyCode();
-                if((keyCode==38 || keyCode==87)&& !isEnd){
-                    //sh.accelerate();
+                if((keyCode==38 || keyCode==87)&& !isEnd){                    
                     upPushed = false;
                 }
                 else if((keyCode==40 || keyCode==83) && !isEnd){
                   
                 }
-                else if((keyCode==39 || keyCode==68)&& !isEnd){
-                    //sh.turn(false);
+                else if((keyCode==39 || keyCode==68)&& !isEnd){                    
                     rightPushed = false;
                 }
-                else if((keyCode==37 || keyCode==65)&& !isEnd){
-                    //sh.turn(true);
+                else if((keyCode==37 || keyCode==65)&& !isEnd){                    
                     leftPushed = false;
                 }
             }
@@ -139,7 +125,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         while(update!=null && threadRun){
             if(!isPaused){
                 if(isEnd){
-                    String[] buttons = { "Again", "Exit"};      //Exit window
+                    String[] buttons = { "Again", "Exit"};                      //Exit window
                     int returnValue = JOptionPane.showOptionDialog(null, "Score: " + this.score, "Game Over",
                     JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[0]);
                     if(returnValue == 0){
@@ -154,7 +140,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                     try{
                         Thread.sleep(2);
                     } catch (Exception e){
-                        System.out.println("Sleep exception! Line: 140");
+                        System.out.println("Sleep exception!");
                     }
                 }
             }
@@ -175,7 +161,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
        
     }
         
-    private void writeOut(){                                                        //Main game run
+    private void writeOut(){                                                    //Main game run thread
         if(keyCycle == 0){
             if(upPushed) sh.accelerate();            
             keyCycle = 20;
@@ -183,7 +169,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         if(turnCycle == 0){
             if(leftPushed) sh.turn(true);
             if(rightPushed) sh.turn(false);
-            turnCycle = 11;
+            turnCycle = 10;
         } else turnCycle--;
         displayer.setText("Score: " + this.score + " Lifes: " + this.lifes);       
         if(this.lifes == 0) isEnd = true;
@@ -288,7 +274,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     }
         
     private void moveMeteors(){        
-        for(int i = 0; i < meteors.size();i++){                             //Move meteors                
+        for(int i = 0; i < meteors.size();i++){                                  //Move meteors                
                 Meteor m = meteors.get(i);
                 m.move();               
                 if(m.checkCollision((int)sh.posX, (int)sh.posY, sh.size)){                    
@@ -306,7 +292,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     }
     
     private void moveBullets(){
-        for(int i = 0; i < bullets.size();i++){                             //Move bullets
+        for(int i = 0; i < bullets.size();i++){                                 //Move bullets
            try{
                 Bullet b = bullets.get(i);
                 if(!b.move()){                
@@ -321,7 +307,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     }
     
     private void shotCheck(){
-    for(int i = 0; i< meteors.size();i++){                              //Meteor get shot
+    for(int i = 0; i< meteors.size();i++){                                      //Meteor get shot
         Meteor  m = meteors.get(i);
         for(int j = 0; j < bullets.size();j++){
             Bullet b = bullets.get(j);
@@ -357,7 +343,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                     if(b.fromPlayer)score++;
                 }
             }
-            if(b.fromPlayer && ufoShip != null){
+            if(b.fromPlayer && ufoShip != null){                                //Shot the UFO
                 if(ufoShip.getShot((int)b.posX, (int)b.posY)){
                     this.getContentPane().remove(ufoShip);                    
                     bullets.remove(b);      
@@ -367,7 +353,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                     ufoShip = null;
                 }
             } else {
-                if(!b.fromPlayer && sh.getShot((int)b.posX, (int)b.posY)){
+                if(!b.fromPlayer && sh.getShot((int)b.posX, (int)b.posY)){      //We get shoted
                     this.resetShip();                      
                     bullets.remove(j);  
                     this.getContentPane().remove(b);
@@ -411,10 +397,10 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         this.setTitle("Asteroid Blaster");
         this.setResizable(false);         
          displayer.setLocation(450, 0);
-        displayer.setFont(new java.awt.Font("LCD", 0, 28));
+        displayer.setFont(new java.awt.Font("Arial", 0, 28));
         displayer.setForeground(Color.green);
         displayer.setOpaque(false);
-        displayer.setSize(200, 24);
+        displayer.setSize(300, 24);
         displayer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         this.getContentPane().add(displayer);
         sh = new SpaceShip(xSize,ySize,30);               
