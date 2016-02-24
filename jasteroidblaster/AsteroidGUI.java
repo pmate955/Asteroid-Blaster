@@ -45,7 +45,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     int xSize = 1020;
     int ySize = 700; 
     int keyCycle = 22;
-    int turnCycle = 10;
+    int turnCycle = 8;
     JLabel displayer = new JLabel();
     List<Meteor> meteors;
     List<Bullet> bullets;       
@@ -169,7 +169,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         if(turnCycle == 0){
             if(leftPushed) sh.turn(true);
             if(rightPushed) sh.turn(false);
-            turnCycle = 10;
+            turnCycle = 8;
         } else turnCycle--;
         displayer.setText("Score: " + this.score + " Lifes: " + this.lifes);       
         if(this.lifes == 0) isEnd = true;
@@ -315,9 +315,9 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                 if(m.type>1){
                     double direction1;
                     double direction2;
-                    if(b.direction+1>6) direction1 = 1;
+                    if(b.direction+0.8>6.28) direction1 = 1;
                     else direction1 = (int)b.direction+1;
-                    if(b.direction-1<1) direction2 = 6;
+                    if(b.direction-0.8<0.1) direction2 = 6;
                     else direction2 = (int)b.direction-1;
                     Meteor m2 = new Meteor(xSize,ySize,m.posX,m.posY,m.type-1, direction1);
                     Meteor m3 = new Meteor(xSize,ySize,m.posX,m.posY,m.type-1, direction2);

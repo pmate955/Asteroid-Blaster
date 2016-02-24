@@ -34,7 +34,7 @@ public class UFO extends JComponent{
         this.maxY = maxY;
         this.size = 40;
         this.posX = 0-size;
-        this.posY = ThreadLocalRandom.current().nextInt(0, maxY);
+        this.posY = ThreadLocalRandom.current().nextInt(0, maxY-100);
         this.cycle = 5;
         this.shotCycle = 30;
         this.speed = 5;

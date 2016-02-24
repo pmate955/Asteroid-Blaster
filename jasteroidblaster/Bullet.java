@@ -43,6 +43,8 @@ public class Bullet extends JComponent{
             double tempY = posY;
             tempX+=Math.sin(direction);
             tempY-=Math.cos(direction);
+            tempX+=Math.sin(direction);
+            tempY-=Math.cos(direction);
             if(tempX < 0 || tempX > maxX) return false;
             else if(tempY < 0 || tempY > maxY) return false;
             else {
