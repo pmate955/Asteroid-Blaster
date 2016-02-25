@@ -6,10 +6,8 @@
 package jasteroidblaster;
 
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.imageio.ImageIO;
@@ -42,15 +40,15 @@ public class Meteor extends JComponent{
         this.posY = posY;
         this.type = type;
         if(type==1){
-            speed = 3;
+            speed = ThreadLocalRandom.current().nextInt(2, 5);
             size = 25;
         }
         else if(type==2){
-            speed = 6;
+            speed = ThreadLocalRandom.current().nextInt(5, 8);;
             size = 50;
         }
         else if(type==3){
-            speed = 12;
+            speed = ThreadLocalRandom.current().nextInt(10, 14);;
             size = 100;
         }
         try{
