@@ -7,7 +7,6 @@ package jasteroidblaster;
 
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.imageio.ImageIO;
@@ -17,7 +16,7 @@ import javax.swing.JComponent;
  *
  * @author Mate1
  */
-public class Meteor extends JComponent{
+public class Meteor extends JComponent implements Runnable{
     
     BufferedImage small;
     BufferedImage medium;
@@ -31,6 +30,7 @@ public class Meteor extends JComponent{
     int speed;              // small - 3, medium 6, large 15
     int cycle;
     int size;
+    Thread load;
     
     
     public Meteor(int maxX, int maxY, double posX, double posY, int type, double direction){
@@ -50,29 +50,28 @@ public class Meteor extends JComponent{
         else if(type==3){
             speed = ThreadLocalRandom.current().nextInt(10, 14);;
             size = 100;
-        }
+        }                    
+        if(direction == -5) this.direction = ThreadLocalRandom.current().nextDouble(0, 6);   
+        else this.direction = direction;
+        load = new Thread(this, "Load Meteor");
+        load.start();
+    }   
+    
+    public void run(){
         try{
-            small = ImageIO.read(this.getClass().getResource("/images/m-1.gif"));
-            medium = ImageIO.read(this.getClass().getResource("/images/m-2.gif"));
-            large = ImageIO.read(this.getClass().getResource("/images/m-3.gif"));
+            if(type==1) small = ImageIO.read(this.getClass().getResource("/images/m-1.gif"));
+            else if(type==2) medium = ImageIO.read(this.getClass().getResource("/images/m-2.gif"));
+            else large = ImageIO.read(this.getClass().getResource("/images/m-3.gif"));
         } catch (Exception e){
             System.out.println("Meteor images not found!");
         }
-              
-        if(direction == -5) this.direction = ThreadLocalRandom.current().nextDouble(0, 6);   
-        else this.direction = direction;
-    }   
+    }
     
     public void paintComponent(Graphics gr){ 
-       
-        Graphics2D g2d = (Graphics2D)gr.create();
-        //g2d.rotate(direction, posX+(size/2), posY+(size/2));
-        
-        if(this.type==1) g2d.drawImage(small, (int)posX, (int)posY,size, size, this);
-        else if(this.type==2) g2d.drawImage(medium, (int)posX, (int)posY,size, size, this);
-        else if(this.type==3) g2d.drawImage(large, (int)posX, (int)posY,size, size, this);
-        
-        //g2d.dispose();        
+        super.paintComponent(gr);
+        if(this.type==1) gr.drawImage(small, (int)posX, (int)posY,size, size, this);
+        else if(this.type==2) gr.drawImage(medium, (int)posX, (int)posY,size, size, this);
+        else if(this.type==3) gr.drawImage(large, (int)posX, (int)posY,size, size, this);            
     }
     
     public void move(){

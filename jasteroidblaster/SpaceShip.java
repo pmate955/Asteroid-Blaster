@@ -5,6 +5,7 @@
  */
 package jasteroidblaster;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -53,13 +54,15 @@ public class SpaceShip extends JComponent{
     }    
     
     public void paintComponent(Graphics gr){                                    //Paint method
+        super.paintComponent(gr);
         Graphics2D g2d = (Graphics2D)gr.create();
-        g2d.rotate(angle, posX+15, posY+15);         
+        g2d.rotate(angle, posX+15, posY+15);        
         if(accelerated){
-            g2d.drawImage(upF,(int) posX, (int) posY, size, size, this); 
+            g2d.drawImage(upF,(int) posX, (int) posY, size, size, null); 
             
-        } else g2d.drawImage(up, (int)posX, (int)posY,size, size, this);        
+        } else g2d.drawImage(up, (int)posX, (int)posY,size, size, null);        
         g2d.dispose();
+                
     }
     
     public void accelerate(){                                                   //Accelerate      
@@ -125,11 +128,12 @@ public class SpaceShip extends JComponent{
                 cycles.set(i, cyc-=1);                
             }
         }
-        if(fireCycle == 0){
-            accelerated = false;
-            fireCycle = 90;
-        } else fireCycle--;
-       
+        if(accelerated){
+            if(fireCycle == 0){
+                accelerated = false;
+                fireCycle = 90;
+            } else fireCycle--;
+        }
     }
     
     public void turn(boolean toLeft){                                           //Rotate spaceship       

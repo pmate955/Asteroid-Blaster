@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
 /**
@@ -46,6 +45,7 @@ public class UFO extends JComponent{
         }
     }
     public void paintComponent(Graphics gr){
+        super.paintComponent(gr);
         gr.drawImage(icon, posX, posY,size, size, this);
         
     }

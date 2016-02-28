@@ -3,26 +3,36 @@ package jasteroidblaster;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.imageio.ImageIO;
+import java.awt.image.VolatileImage;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-class ImagePanel extends JComponent {
+class ImagePanel extends JComponent implements Runnable{
     private BufferedImage image;
-    public ImagePanel(BufferedImage image) {
-        this.image = image;
+    private Thread load;
+    public ImagePanel() {        
+        load = new Thread(this, "Load image");
+        load.start();
+    }
+    public void run(){
+        try{
+            image = ImageIO.read(this.getClass().getResource("/images/back.jpg"));            
+        } catch (Exception e){
+            System.out.println("Background image not found!");
+        }
     }
     @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(image, 0, 0,1020,700, this);        
-    }
+    protected void paintComponent(Graphics g) {         
+        g.drawImage(image, 0, 0,1020,700, this);           
+    }    
 }
 
 public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
@@ -60,17 +70,10 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         if(diff==0) this.lifes = 10;
         else if(diff==1) this.lifes = 5;
         else this.lifes = 2;
-        lifesMax = lifes;
-        BufferedImage back = null;
-        try{
-            back = ImageIO.read(this.getClass().getResource("/images/back.jpg"));
-            
-        } catch (Exception e){
-            System.out.println("Background image not found!");
-        }
-        ip = new ImagePanel(back);
+        lifesMax = lifes;        
+        ip = new ImagePanel();
         this.setContentPane(ip);
-        init();             
+        init();          
         this.revalidate();       
         this.repaint();
         this.addKeyListener(new KeyAdapter() {                                  //Keyboard
@@ -142,14 +145,18 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                         this.dispose();
                     }
                 } else {
-                    this.writeOut();
-                    try{
-                        Thread.sleep(2);
-                    } catch (Exception e){
-                        System.out.println("Sleep exception!");
-                    }
+                    this.writeOut();                    
                 }
             }
+            this.waiting();
+        }
+    }
+    
+    private void waiting(){
+       try{
+            Thread.sleep(2);
+        } catch (Exception e){
+            System.out.println("Sleep exception!");
         }
     }
     
@@ -226,7 +233,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
             this.validate();
             shotAsteroids = 0;
         }
-        this.getContentPane().repaint();        
+        this.getContentPane().repaint();         
     }
     
     public void gameRun(){
@@ -306,6 +313,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                         ufoSpawned = false;
                     }
                 }
+                m = null;
             }
     }
     
@@ -342,8 +350,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
         Meteor  m = meteors.get(i);
         for(int j = 0; j < bullets.size();j++){
             Bullet b = bullets.get(j);
-            if(m.shot((int)b.posX, (int)b.posY)){
-                 addDebris(m.posX, m.posY, m.size/5);
+            if(m.shot((int)b.posX, (int)b.posY)){                 
                 if(m.type>1){
                     double direction1;
                     double direction2;
@@ -369,15 +376,15 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                      meteors.add(m2);
                     meteors.add(m3);
                } else {             
-                   
+                   addDebris(m.posX, m.posY, m.size/5);
                    this.getContentPane().remove(m);                   
                     this.getContentPane().remove(b);
                     meteors.remove(i);                   
                     bullets.remove(j);                    
                     shotAsteroids++;
-                    if(b.fromPlayer)score++;
-                    
-                }
+                    if(b.fromPlayer)score++;                   
+                }          
+               
             }
             if(b.fromPlayer && ufoShip != null){                                //Shot the UFO
                 if(ufoShip.getShot((int)b.posX, (int)b.posY)){
@@ -388,15 +395,20 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                     score+=25;
                     ufoSpawned = false;
                     ufoShip = null;
+                     b = null;
                 }
             } else {
                 if(!b.fromPlayer && sh.getShot((int)b.posX, (int)b.posY)){      //We get shoted                    
                     this.resetShip();                      
                     bullets.remove(j);  
                     this.getContentPane().remove(b);
+                     b = null;
                 }
             }
+            b = null;
+            
           }
+         m = null;
        }    
     }
     
@@ -461,5 +473,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 }
+
+
 
 //class KeyBoard extends KeyEvent implements Runnable
