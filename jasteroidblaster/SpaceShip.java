@@ -36,7 +36,8 @@ public class SpaceShip extends JComponent{
     List<Integer> cycles = new ArrayList<Integer>();                            //Cycle integer for speed (temporary)
     List<Double> angles = new ArrayList<Double>();                              //Angles to move
     List<Integer> angleCycle = new ArrayList<Integer>();                        //Cycle integer for speed    
-    int size;                                                                   //Size of spaceship in pixel                                                                       
+    int size;                                                                   //Size of spaceship in pixel               
+    String label =  "";
     
     
     public SpaceShip(int maxX, int maxY, int size){                             //Constructor
@@ -60,7 +61,9 @@ public class SpaceShip extends JComponent{
         if(accelerated){
             g2d.drawImage(upF,(int) posX, (int) posY, size, size, null); 
             
-        } else g2d.drawImage(up, (int)posX, (int)posY,size, size, null);        
+        } else g2d.drawImage(up, (int)posX, (int)posY,size, size, null);  
+        gr.setColor(Color.green);
+        gr.drawString(label,  (int)posX+size, (int)posY+size);
         g2d.dispose();
                 
     }
