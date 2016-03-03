@@ -139,12 +139,12 @@ public class SpaceShip extends JComponent{
         }
     }
     
-    public void turn(boolean toLeft){                                           //Rotate spaceship       
+    public void turn(boolean toLeft, int toDeg){                                           //Rotate spaceship       
        if(toLeft){
-            if(dir>5) dir-=5;
+            if(dir>toDeg) dir-=toDeg;
             else dir = 360;
         } else {
-            if(dir < 355) dir +=5;
+            if(dir < 360-toDeg) dir +=toDeg;
             else dir = 0;
         }
        angle = Math.toRadians(dir);

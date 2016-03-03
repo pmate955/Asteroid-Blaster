@@ -2,6 +2,7 @@
 package jasteroidblaster;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -53,6 +54,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     boolean leftPushed = false;
     byte lifes;
     byte lifesMax;
+    byte turnCount = 0;
     ImagePanel ip;
     int addedLabelCount = 0;
     int shotAsteroids = 0;
@@ -129,9 +131,11 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
                 }
                 else if((keyCode==39 || keyCode==68)&& !isEnd){                    
                     rightPushed = false;
+                    turnCount = 0;
                 }
                 else if((keyCode==37 || keyCode==65)&& !isEnd){                    
                     leftPushed = false;
+                    turnCount = 0;
                 }
             }
         });
@@ -194,9 +198,14 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
             keyCycle = 22;
         } else keyCycle--;
         if(turnCycle == 0){
-            if(leftPushed) sh.turn(true);
-            if(rightPushed) sh.turn(false);
-            turnCycle = 8;
+            byte toDeg = 1;
+            if(leftPushed || rightPushed){
+                if(turnCount > 5) toDeg = 5;
+                if(leftPushed) sh.turn(true, toDeg);
+                if(rightPushed) sh.turn(false, toDeg);
+                turnCycle = 8;
+                turnCount++;                
+            }
         } else turnCycle--;
         if(shotcycle == 0){
             if(shotPushed){
@@ -476,6 +485,7 @@ public class AsteroidGUI extends javax.swing.JFrame implements Runnable{
     private void init(){
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(xSize, ySize);
+        setMinimumSize(new Dimension(1020,700));
         ip.setBackground(Color.black);
         this.setLayout(new BorderLayout());
         this.setTitle("Asteroid Blaster");
