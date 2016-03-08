@@ -174,7 +174,7 @@ public class SpaceShip extends JComponent{
     
     
     
-    public void setMax(int maxX, int maxY){                                     //Unused now
+    public void setMax(int maxX, int maxY){                                     //Resize the window
         this.maxX = maxX;
         this.maxY = maxY;
         repaint();
